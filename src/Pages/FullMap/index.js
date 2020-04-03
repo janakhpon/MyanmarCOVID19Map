@@ -3,7 +3,7 @@ import { Map, Marker, Popup, TileLayer } from "react-leaflet";
 import { Icon } from "leaflet";
 import { csv } from 'd3'
 
-import "./Styles/style.scss"
+import styles from './index.module.scss'
 
 export const iconred = new Icon({
   iconUrl: "/Map_marker_red.svg",
@@ -22,7 +22,7 @@ export const icongreen = new Icon({
 });
 
 
-export default function App() {
+const PageFullMap = () => {
   const [data, setData] = useState([])
 
   useEffect(() => {
@@ -43,11 +43,7 @@ export default function App() {
             }
 
 
-            let formatted = {
-              Region: val.SR, Township: val.Township, Hospital: val.Hospital, Pending: val.Pending, Confirmed: val.Confirmed,
-              Fulllocation: `${val.SR}/${val.Township}`, Latitude: val.Latitude, Longitude: val.Longitude, Death: val.Death, Icon: geticonval,
-              Suspected: val.Suspected, PUI: val.PUI, Male: val.M, Female: val.F
-            }
+            let formatted = { Region: val.SR, Township: val.Township, Hospital: val.Hospital, Pending: val.Pending, Confirmed: val.Confirmed, Fulllocation: `${val.SR}/${val.Township}`, Latitude: val.Latitude, Longitude: val.Longitude, Death: val.Death, Icon: geticonval }
             return host.push(formatted)
           })
 
@@ -65,7 +61,7 @@ export default function App() {
       />
 
       {
-        data.map((d, key) => (
+        data.map(d => (
 
           <Marker
             position={
@@ -75,25 +71,10 @@ export default function App() {
               ]
             }
             icon={d.Death === "0" ? d.Icon : iconred}
-            key={key}
-
-            onMouseOver={(e) => {
-              e.target.openPopup();
-            }}
-            onMouseOut={(e) => {
-              e.target.closePopup();
-            }}
 
           >
-            <Popup className="request-popup">
-              <span>{d.Fulllocation} <br />
-                {d.Suspected} Suspected victims <br />
-                {d.PUI} victims under surveillance <br />
-                {d.Male} Male victims - {d.Female} Female victims <br />
-                {d.Pending} Lab Pending victims <br />
-                {d.Confirmed} confirmed victims <br />
-                {d.Death} Death victims <br />
-                {d.Hospital} </span>
+            <Popup>
+              <span>{d.Fulllocation} <br /> {d.Pending} suspected victims <br /> {d.Confirmed} confirmed victims <br /> {d.Death} Death victims <br /> {d.Hospital} </span>
             </Popup>
           </Marker>
         ))
@@ -105,8 +86,9 @@ export default function App() {
         })
       }
 
-
-      )}
     </Map>
   );
 }
+
+
+export default PageFullMap
