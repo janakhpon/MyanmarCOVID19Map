@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { Map, Marker, Popup, TileLayer } from "react-leaflet";
+import 'react-leaflet-fullscreen/dist/styles.css'
+import FullscreenControl from 'react-leaflet-fullscreen';
+import 'leaflet-easyprint';
+import { Map, Marker, Popup, TileLayer, withLeaflet } from "react-leaflet";
 import { Icon } from "leaflet";
 import { csv } from 'd3'
+import PrintControlDefault from 'react-leaflet-easyprint';
 
 import "./Styles/style.scss"
 
@@ -21,12 +25,13 @@ export const icongreen = new Icon({
   iconSize: [25, 25]
 });
 
+const PrintControl = withLeaflet(PrintControlDefault);
 
 export default function App() {
   const [data, setData] = useState([])
 
   useEffect(() => {
-    csv('https://raw.githubusercontent.com/theananda/myanmar-covid19-data/master/MOHS%20Dashboard%20Data.csv')
+    csv('https://raw.githubusercontent.com/theananda/myanmar-covid19-data/master/MOHS_Dashboard_Data/MOHS%20Dashboard%20Data.csv')
       .then((d, error) => {
         if (error) {
 
@@ -57,7 +62,9 @@ export default function App() {
   }, [])
 
 
+
   return (
+
     <Map center={[16.920552, 96.156532]} zoom={5}>
       <TileLayer
         attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
@@ -95,6 +102,7 @@ export default function App() {
                 {d.Death} Death victims <br />
                 {d.Hospital} </span>
             </Popup>
+
           </Marker>
         ))
       }
@@ -107,6 +115,9 @@ export default function App() {
 
 
       )}
+      <FullscreenControl position="topright" />
+      <PrintControl position="topleft" sizeModes={['Current', 'A4Portrait', 'A4Landscape']} hideControlContainer={false} />
+      <PrintControl position="topleft" sizeModes={['Current', 'A4Portrait', 'A4Landscape']} hideControlContainer={false} title="Export as PNG" exportOnly />
     </Map>
   );
 }
